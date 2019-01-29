@@ -7,6 +7,8 @@
  *
  * Portions Copyright (c) 2004-2014, EnterpriseDB Corporation.
  *
+ * Portions Copyright (c) 2018-2019, Postgres Connect
+ *
  * IDENTIFICATION
  * 		options.c
  *
@@ -15,7 +17,7 @@
 
 #include "postgres.h"
 
-#include "mysql_fdw.h"
+#include "mysqldb_fdw.h"
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -55,7 +57,7 @@ struct MySQLFdwOption
 
 
 /*
- * Valid options for mysql_fdw.
+ * Valid options for mysqldb_fdw.
  *
  */
 static struct MySQLFdwOption valid_options[] =
@@ -81,9 +83,9 @@ static struct MySQLFdwOption valid_options[] =
 	{ NULL,			InvalidOid }
 };
 
-extern Datum mysql_fdw_validator(PG_FUNCTION_ARGS);
+extern Datum mysqldb_fdw_validator(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(mysql_fdw_validator);
+PG_FUNCTION_INFO_V1(mysqldb_fdw_validator);
 
 
 /*
@@ -93,21 +95,21 @@ PG_FUNCTION_INFO_V1(mysql_fdw_validator);
  * Raise an ERROR if the option or its value is considered invalid.
  */
 Datum
-mysql_fdw_validator(PG_FUNCTION_ARGS)
+mysqldb_fdw_validator(PG_FUNCTION_ARGS)
 {
 	List		*options_list = untransformRelOptions(PG_GETARG_DATUM(0));
 	Oid			catalog = PG_GETARG_OID(1);
 	ListCell	*cell;
 
 	/*
-	 * Check that only options supported by mysql_fdw,
+	 * Check that only options supported by mysqldb_fdw,
 	 * and allowed for the current object type, are given.
 	 */
 	foreach(cell, options_list)
 	{
 		DefElem	 *def = (DefElem *) lfirst(cell);
 
-		if (!mysql_is_valid_option(def->defname, catalog))
+		if (!mysqldb_is_valid_option(def->defname, catalog))
 		{
 			struct MySQLFdwOption *opt;
 			StringInfoData buf;
@@ -140,7 +142,7 @@ mysql_fdw_validator(PG_FUNCTION_ARGS)
  * context is the Oid of the catalog holding the object the option is for.
  */
 bool
-mysql_is_valid_option(const char *option, Oid context)
+mysqldb_is_valid_option(const char *option, Oid context)
 {
 	struct MySQLFdwOption *opt;
 
@@ -153,20 +155,20 @@ mysql_is_valid_option(const char *option, Oid context)
 }
 
 /*
- * Fetch the options for a mysql_fdw foreign table.
+ * Fetch the options for a mysqldb_fdw foreign table.
  */
-mysql_opt*
-mysql_get_options(Oid foreignoid)
+mysqldb_opt*
+mysqldb_get_options(Oid foreignoid)
 {
 	ForeignTable *f_table = NULL;
 	ForeignServer *f_server = NULL;
 	UserMapping *f_mapping;
 	List *options;
 	ListCell *lc;
-	mysql_opt *opt;
+	mysqldb_opt *opt;
 
-	opt = (mysql_opt*) palloc(sizeof(mysql_opt));
-	memset(opt, 0, sizeof(mysql_opt));
+	opt = (mysqldb_opt*) palloc(sizeof(mysqldb_opt));
+	memset(opt, 0, sizeof(mysqldb_opt));
 
 	/*
 	 * Extract options from FDW objects.

@@ -1,6 +1,9 @@
-\c postgres postgres
-CREATE EXTENSION mysql_fdw;
-CREATE SERVER mysql_svr FOREIGN DATA WRAPPER mysql_fdw;
+DROP USER IF EXISTS postgres;
+CREATE USER postgres;
+ALTER USER postgres WITH SUPERUSER;
+\c contrib_regression postgres 
+CREATE EXTENSION mysqldb_fdw;
+CREATE SERVER mysql_svr FOREIGN DATA WRAPPER mysqldb_fdw;
 CREATE USER MAPPING FOR postgres SERVER mysql_svr OPTIONS(username 'foo', password 'bar');
 
 CREATE FOREIGN TABLE department(department_id int, department_name text) SERVER mysql_svr OPTIONS(dbname 'testdb', table_name 'department');
@@ -66,7 +69,7 @@ create or replace function test_param_where() returns void as $$
 DECLARE
   n varchar;
 BEGIN
-  FOR x IN 1..9 LOOP
+  FOR x IN 1..2 LOOP
     select b into n from numbers where a=x;
     raise notice 'Found number %', n;
   end loop;
@@ -76,11 +79,11 @@ $$ LANGUAGE plpgsql;
 
 SELECT test_param_where();
 
-create or replace function test_param_where2(integer, text) returns integer as '
-  select a from numbers where a=$1 and b=$2;
-' LANGUAGE sql;
+-- create or replace function test_param_where2(integer, text) returns integer as '
+--  select a from numbers where a=$1 and b=$2;
+-- ' LANGUAGE sql;
 
-SELECT test_param_where2(1, 'One');
+-- SELECT test_param_where2(1, 'One');
 
 DELETE FROM employee;
 DELETE FROM department;
@@ -88,7 +91,7 @@ DELETE FROM empdata;
 DELETE FROM numbers;
 
 DROP FUNCTION test_param_where();
-DROP FUNCTION test_param_where2(integer, text);
+--DROP FUNCTION test_param_where2(integer, text);
 DROP FOREIGN TABLE numbers;
 
 DROP FOREIGN TABLE department;
@@ -96,4 +99,4 @@ DROP FOREIGN TABLE employee;
 DROP FOREIGN TABLE empdata;
 DROP USER MAPPING FOR postgres SERVER mysql_svr;
 DROP SERVER mysql_svr;
-DROP EXTENSION mysql_fdw CASCADE;
+DROP EXTENSION mysqldb_fdw CASCADE;
