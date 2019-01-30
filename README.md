@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/Postgres-Connect/mysqldb_fdw.svg?branch=master)][STATUS]
+[![Build Status](https://travis-ci.com/Postgres-Connect/mysqldb_fdw.svg?branch=master)][STATUS]
 [![Coverage](http://img.shields.io/coveralls/Postgres-Connect/mysqldb_fdw.svg)][COVERAGE]
 
 MySQL Foreign Data Wrapper for PostgreSQL
@@ -64,4 +64,4 @@ See the [`LICENSE`][LICENCE] file for full details.
 [INSTALLATION]: INSTALLATION.md
 [USAGE]: USAGE.md
 [STATUS]: https://travis-ci.org/Postgres-Connect/mysqldb_fdw
-[COVERGAE]: https://coveralls.io/r/Postgres-Connect/mysqldb_fdw
+[COVERAGE]: https://coveralls.io/r/Postgres-Connect/mysqldb_fdw
