@@ -60,7 +60,7 @@ See the [`LICENSE`][LICENCE] file for full details.
 [MYSQL]: http://www.mysql.com
 [CONTRIBUTING]: CONTRIBUTING.md
 [LICENCE]: LICENSE
-[RELEASE_NOTES]: RELEASE.md
+[RELEASE]: RELEASE.md
 [INSTALLATION]: INSTALLATION.md
 [USAGE]: USAGE.md
 [STATUS]: https://travis-ci.org/Postgres-Connect/mysqldb_fdw
